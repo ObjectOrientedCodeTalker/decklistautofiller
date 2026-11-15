@@ -2,7 +2,7 @@
 
 A browser extension that fills Yu-Gi-Oh! deck list forms for you. Build your deck on a simulator, paste its YDKE link or choose its .ydk file, press **Fill deck list**, and every card goes into the site's own form.
 
-**Install:** [Chrome Web Store](https://chromewebstore.google.com/detail/decklist-auto-filler/knjanhkpoicpjebbkpcnbinkbdhhpfld) · [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/decklist-auto-filler/) (desktop and Android) · [Download a release](https://github.com/ObjectOrientedCodeTalker/decklistautofiller/releases)
+**Install:** [Chrome Web Store](https://chromewebstore.google.com/detail/decklist-auto-filler/knjanhkpoicpjebbkpcnbinkbdhhpfld) · [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/decklist-auto-filler/) · [Download a release](https://github.com/ObjectOrientedCodeTalker/decklistautofiller/releases)
 
 ## Where it works
 
