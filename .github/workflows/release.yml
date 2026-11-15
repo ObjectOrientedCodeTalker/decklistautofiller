@@ -36,10 +36,19 @@ jobs:
       - name: Build the zip
         run: node tools/package.mjs
 
+      # Notes come from this version's section of CHANGELOG.md ("## 2.1.0" up to the next
+      # "## "). Without one, GitHub writes notes from the commits instead.
       - name: Publish the release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          awk -v v="## $VERSION" '$0 == v { on = 1; next } /^## / { on = 0 } on' CHANGELOG.md > notes.md
+          if grep -q '[^[:space:]]' notes.md; then
+            notes=(--notes-file notes.md)
+          else
+            echo "::warning::No section for $VERSION in CHANGELOG.md; using generated notes"
+            notes=(--generate-notes)
+          fi
           gh release create "$GITHUB_REF_NAME" "dist/decklist-auto-filler-$VERSION.zip" \
             --title "Decklist Auto-Filler $VERSION" \
-            --generate-notes
+            "${notes[@]}"
