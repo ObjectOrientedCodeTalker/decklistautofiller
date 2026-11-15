@@ -1,0 +1,8 @@
+# Built zips (rebuild with: node tools/package.mjs)
+dist/
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/

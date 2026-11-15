@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Decklist Auto-Filler</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main class="card">
+    <header class="head">
+      <img src="../icons/icon32.png" alt="" width="24" height="24">
+      <h1>Decklist Auto-Filler</h1>
+    </header>
+
+    <button id="toggle" class="setting" type="button" role="switch" aria-checked="true">
+      <span id="state" class="setting-label">Enabled</span>
+      <span class="track" aria-hidden="true"><span class="thumb"></span></span>
+    </button>
+
+    <p class="data">Latest set: <b id="set-code">…</b> <span id="set-note"></span></p>
+  </main>
+  <script src="../content/data.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+/* Visual deck list. Loaded after panel.css, which supplies the tokens and the frame. */
+
+:host {
+  container-type: inline-size;
+}
+
+.visual .body {
+  gap: 14px;
+}
+
+.counts,
+.head-status {
+  font-variant-numeric: tabular-nums;
+}
+
+.head-status {
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+/* ---- clear control -------------------------------------------------------- */
+
+.danger-text {
+  color: var(--danger-ink);
+  text-decoration-color: rgba(169, 68, 66, 0.35);
+}
+
+.danger-text:hover {
+  color: #843534;
+}
+
+.text-button:disabled {
+  color: var(--ink-muted);
+  text-decoration: none;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.confirm {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+}
+
+.confirm-q {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--danger-ink);
+  margin-right: 2px;
+}
+
+.btn.danger {
+  color: #ffffff;
+  font-weight: bold;
+  background: var(--danger-ink);
+  border-color: #8f3735;
+}
+
+.btn.danger:hover {
+  background: #8f3735;
+  border-color: #7a2f2d;
+}
+
+/* ---- sections ------------------------------------------------------------- */
+
+.deck-section h4 {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+/* Main, Side and Extra stack across the full width of the box. Main runs 10 to a row
+   and Side/Extra 15 to a row, so 10 Main cards span exactly what 15 Side or Extra cards
+   do. Sizes come from the box width, never from how many cards the deck has. */
+.layout {
+  display: grid;
+  gap: 14px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.side .grid,
+.extra .grid {
+  grid-template-columns: repeat(15, minmax(0, 1fr));
+  gap: 3px;
+}
+
+.empty,
+.section-empty {
+  color: var(--ink-muted);
+}
+
+.section-empty {
+  font-size: 13px;
+}
+
+/* ---- cards ---------------------------------------------------------------- */
+
+.card {
+  position: relative;
+  aspect-ratio: 268 / 391;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--track);
+  box-shadow: 0 1px 2px rgba(31, 61, 39, 0.2);
+  cursor: default;
+  transition:
+    transform 160ms ease-out,
+    box-shadow 160ms ease-out,
+    opacity 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 200ms ease-out;
+}
+
+.card.loading img {
+  opacity: 0;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(31, 61, 39, 0.24);
+}
+
+/* A card that just landed on the list settles into place. */
+.card.enter {
+  opacity: 0;
+  transform: translateY(6px) scale(0.94);
+  filter: blur(3px);
+}
+
+.fallback-name {
+  display: none;
+}
+
+.card.missing {
+  background: #e7eee8;
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+
+.card.missing .fallback-name {
+  display: block;
+  position: absolute;
+  inset: 0;
+  padding: 3px;
+  overflow: hidden;
+  font-size: 9px;
+  line-height: 1.15;
+  color: var(--ink-muted);
+  overflow-wrap: anywhere;
+}
+
+/* ---- hover preview -------------------------------------------------------- */
+
+.peek {
+  position: fixed;
+  z-index: 2147483000;
+  width: 220px;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.97);
+  transform-origin: center left;
+  transition: opacity 120ms ease-out, transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.peek.on {
+  opacity: 1;
+  transform: none;
+}
+
+.peek img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 7px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28), 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+.peek-name {
+  display: none;
+}
+
+.peek.text-only img {
+  display: none;
+}
+
+.peek.text-only .peek-name {
+  display: block;
+  padding: 10px 12px;
+  font-weight: bold;
+  background: var(--surface-raised);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card.enter {
+    filter: none;
+    transform: none;
+  }
+}

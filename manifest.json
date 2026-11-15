@@ -1,0 +1,76 @@
+{
+    "name": "Decklist Auto-Filler",
+    "description": "Fills Yu-Gi-Oh! tournament deck list forms from a simulator deck (YDKE link or .ydk file) and shows the deck as card images.",
+    "version": "2.1.0",
+    "manifest_version": 3,
+    "action": {
+        "default_popup": "popup/popup.html",
+        "default_icon": {
+            "16": "icons/icon16.png",
+            "19": "icons/icon19.png",
+            "24": "icons/icon24.png",
+            "32": "icons/icon32.png",
+            "38": "icons/icon38.png",
+            "48": "icons/icon48.png",
+            "128": "icons/icon128.png",
+            "256": "icons/icon256.png"
+        }
+    },
+    "icons": {
+        "16": "icons/icon16.png",
+        "19": "icons/icon19.png",
+        "24": "icons/icon24.png",
+        "32": "icons/icon32.png",
+        "38": "icons/icon38.png",
+        "48": "icons/icon48.png",
+        "128": "icons/icon128.png",
+        "256": "icons/icon256.png"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://events.thesidedeck.com/Decks/EditDeckList*",
+                "https://registration.yugioh-card.com/*",
+                "https://www.db.yugioh-card.com/yugiohdb/member_deck.action*"
+            ],
+            "js": [
+                "content/match.js",
+                "content/deck.js",
+                "content/data.js",
+                "content/page.js",
+                "content/editor.js",
+                "content/neuron.js",
+                "content/fill.js",
+                "content/panel.js",
+                "content/visual.js",
+                "content/main.js"
+            ]
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "content/panel.css",
+                "content/visual.css",
+                "icons/icon32.png"
+            ],
+            "matches": [
+                "https://events.thesidedeck.com/*",
+                "https://registration.yugioh-card.com/*",
+                "https://www.db.yugioh-card.com/*"
+            ]
+        }
+    ],
+    "permissions": [
+        "storage"
+    ],
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "decklist-auto-filler@objectorientedcodetalker",
+            "strict_min_version": "140.0",
+            "data_collection_permissions": {
+                "required": ["none"]
+            }
+        }
+    }
+}

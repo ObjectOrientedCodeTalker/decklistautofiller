@@ -1,0 +1,143 @@
+:root {
+  --ink: #333333;
+  --ink-muted: #56635a;
+  --surface: #f2f7f3;
+  --surface-raised: #ffffff;
+  --rule: #d6e7da;
+  --field-border: #c9dccd;
+  --accent: #237a37;
+  --track-off: #b9c4bc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  width: 280px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.42857;
+  color: var(--ink);
+  background: var(--surface);
+}
+
+::selection {
+  background: rgba(35, 122, 55, 0.18);
+}
+
+h1,
+p {
+  margin: 0;
+}
+
+.card {
+  display: grid;
+  gap: 10px;
+  padding: 12px 14px 14px;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.head img {
+  border-radius: 4px;
+}
+
+h1 {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+/* ---- switch row ----------------------------------------------------------- */
+
+.setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 9px 10px 9px 12px;
+  font: inherit;
+  font-weight: bold;
+  color: var(--ink);
+  text-align: left;
+  background: var(--surface-raised);
+  border: 1px solid var(--field-border);
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(31, 61, 39, 0.06);
+  cursor: pointer;
+  transition: border-color 150ms ease-out;
+}
+
+.setting:hover {
+  border-color: #9fc4a8;
+}
+
+.setting:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.setting[aria-checked="false"] .setting-label {
+  color: var(--ink-muted);
+}
+
+.track {
+  flex: none;
+  position: relative;
+  width: 40px;
+  height: 22px;
+  background: var(--track-off);
+  border-radius: 11px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12);
+  transition: background-color 160ms ease-out;
+}
+
+.thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.setting[aria-checked="true"] .track {
+  background: var(--accent);
+}
+
+.setting[aria-checked="true"] .thumb {
+  transform: translateX(18px);
+}
+
+/* ---- latest set ----------------------------------------------------------- */
+
+.data {
+  font-size: 13px;
+  color: var(--ink-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.data b {
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track,
+  .thumb {
+    transition: none;
+  }
+}

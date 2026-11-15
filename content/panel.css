@@ -1,0 +1,643 @@
+/* Decklist Auto-Filler panel. Built on Bootstrap 3's metrics (14px Helvetica, 34px
+   controls, 4px corners) so it sits naturally in the host page, with its own green
+   tint and header so players can tell it apart from the site's own controls. */
+
+:host {
+  all: initial;
+  display: block;
+
+  --ink: #333333;
+  --ink-muted: #56635a;
+  --surface: #f2f7f3;
+  --surface-raised: #ffffff;
+  --rule: #bcd8c3;
+  --rule-soft: #d6e7da;
+  --field-border: #cccccc;
+  --accent: #237a37;
+  --accent-hover: #1d6a2f;
+  --accent-press: #185a28;
+  --accent-wash: rgba(35, 122, 55, 0.18);
+  --track: #dbe8de;
+  --warn-ink: #8a6d3b;
+  --warn-surface: #fcf8e3;
+  --warn-rule: #f2dfb4;
+  --danger-ink: #a94442;
+  --danger-surface: #f2dede;
+  --danger-rule: #ebccd1;
+
+  --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.42857;
+  color: var(--ink);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: var(--accent-wash);
+  color: var(--ink);
+}
+
+p,
+h3,
+h4,
+ul {
+  margin: 0;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- frame ---------------------------------------------------------------- */
+
+/* Spacing and type live on the panel, not :host: a host page's own styles (Neuron's, for
+   one) can override :host, but can't reach inside the shadow root. A site adapter can set
+   the gaps above and below the panel (--daf-gap-top, --daf-gap, set inline on the host) to
+   match the page around it. */
+.panel {
+  margin: var(--daf-gap-top, 0) 0 var(--daf-gap, 20px);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.42857;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(31, 61, 39, 0.06);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+.panel.is-collapsed .head {
+  border-bottom-color: transparent;
+}
+
+.mark {
+  display: block;
+  flex: none;
+  border-radius: 3px;
+}
+
+.head h3 {
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 20px;
+}
+
+.tag {
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--ink-muted);
+}
+
+.head-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: auto;
+}
+
+.head-links a,
+.text-button,
+.collapse {
+  font: inherit;
+  font-size: 13px;
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: rgba(35, 122, 55, 0.35);
+  text-underline-offset: 3px;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.head-links a:hover,
+.text-button:hover,
+.collapse:hover {
+  color: var(--accent-press);
+  text-decoration-color: currentColor;
+}
+
+.collapse {
+  text-decoration: none;
+  min-width: 34px;
+  text-align: right;
+}
+
+.collapse:disabled {
+  color: var(--ink-muted);
+  cursor: default;
+  opacity: 0.6;
+}
+
+.body {
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+}
+
+/* ---- focus ---------------------------------------------------------------- */
+
+a:focus-visible,
+button:focus-visible,
+.outcome:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.outcome:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ---- deck input ----------------------------------------------------------- */
+
+/* Paste field, "or", file picker. A .ydk file can be dropped anywhere in here. */
+.sources {
+  display: grid;
+  gap: 6px;
+  margin: -4px;
+  padding: 4px;
+  border: 1px dashed transparent;
+  border-radius: 6px;
+  transition: border-color 150ms ease-out, background-color 150ms ease-out;
+}
+
+.sources.dragging {
+  border-color: var(--accent);
+  background: rgba(35, 122, 55, 0.05);
+}
+
+.label {
+  display: block;
+  font-weight: bold;
+}
+
+.deck-input {
+  display: block;
+  width: 100%;
+  height: 34px;
+  padding: 6px 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  background: var(--surface-raised);
+  border: 1px solid var(--field-border);
+  border-radius: 4px;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  caret-color: var(--accent);
+  text-overflow: ellipsis;
+  transition: border-color 150ms ease-out, box-shadow 150ms ease-out;
+}
+
+.deck-input::placeholder {
+  color: #6b756e;
+}
+
+.deck-input:focus {
+  outline: none;
+  border-color: #5a9c69;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px var(--accent-wash);
+}
+
+.deck-input[aria-invalid="true"] {
+  border-color: var(--danger-ink);
+}
+
+.deck-input[aria-invalid="true"]:focus {
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px rgba(169, 68, 66, 0.18);
+}
+
+.or {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0 2px;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.or::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--rule-soft);
+}
+
+.file-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  min-width: 0;
+}
+
+.file-name {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.file-name-text {
+  overflow: hidden;
+  font-weight: bold;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.file-name.is-empty {
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+.deck-status {
+  font-size: 14px;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.deck-status.is-ok {
+  color: var(--accent);
+  font-weight: bold;
+}
+
+.deck-status.is-error {
+  font-size: 13px;
+  color: var(--danger-ink);
+}
+
+/* ---- buttons -------------------------------------------------------------- */
+
+.actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 2px;
+}
+
+.btn {
+  display: inline-block;
+  min-height: 34px;
+  padding: 6px 14px;
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--ink);
+  background: var(--surface-raised);
+  border: 1px solid var(--field-border);
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 150ms ease-out, border-color 150ms ease-out;
+}
+
+.btn:hover {
+  background: #e6e6e6;
+  border-color: #adadad;
+}
+
+.btn:active {
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+
+.btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn.primary {
+  color: #ffffff;
+  font-weight: bold;
+  background: var(--accent);
+  border-color: var(--accent-hover);
+}
+
+.btn.primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-press);
+}
+
+.btn.primary:active {
+  background: var(--accent-press);
+}
+
+.btn-sm {
+  min-height: 28px;
+  padding: 3px 10px;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+/* ---- add by hand ---------------------------------------------------------- */
+
+.item-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-top: 6px;
+}
+
+.report {
+  font-size: 13px;
+  color: var(--danger-ink);
+  text-decoration: underline;
+  text-decoration-color: rgba(169, 68, 66, 0.35);
+  text-underline-offset: 3px;
+}
+
+.report:hover {
+  color: #843534;
+  text-decoration-color: currentColor;
+}
+
+.report:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.fineprint {
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+/* ---- notices -------------------------------------------------------------- */
+
+.notice {
+  display: grid;
+  gap: 2px;
+  padding: 8px 12px;
+  font-size: 13px;
+  border: 1px solid;
+  border-radius: 4px;
+}
+
+.notice.warn {
+  color: var(--warn-ink);
+  background: var(--warn-surface);
+  border-color: var(--warn-rule);
+}
+
+.notice.danger {
+  color: var(--danger-ink);
+  background: var(--danger-surface);
+  border-color: var(--danger-rule);
+}
+
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 4px;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.check input {
+  flex: none;
+  width: 15px;
+  height: 15px;
+  margin: 1px 0 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.check input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.status-line {
+  color: var(--ink-muted);
+}
+
+/* ---- progress ------------------------------------------------------------- */
+
+.progress-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.progress-title {
+  font-weight: bold;
+}
+
+.progress-count {
+  font-size: 13px;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.bar {
+  height: 8px;
+  margin-top: -4px;
+  background: var(--track);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+  border-radius: 4px;
+  transition: width 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.current {
+  min-height: 20px;
+}
+
+.card-name {
+  font-weight: bold;
+}
+
+.card-meta {
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- result --------------------------------------------------------------- */
+
+.outcome {
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1.35;
+}
+
+.outcome.ok {
+  color: var(--accent);
+}
+
+.outcome.warn {
+  color: var(--warn-ink);
+}
+
+.tally {
+  width: 100%;
+  max-width: 420px;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  background: var(--surface-raised);
+  border: 1px solid var(--rule-soft);
+  border-radius: 4px;
+}
+
+.tally th,
+.tally td {
+  padding: 5px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+.tally thead th {
+  font-weight: normal;
+  color: var(--ink-muted);
+}
+
+.tally tbody tr:last-child > * {
+  border-bottom: 0;
+}
+
+.tally td:nth-child(2),
+.tally td:nth-child(3) {
+  text-align: right;
+  width: 1%;
+  white-space: nowrap;
+  padding-left: 18px;
+}
+
+.tally thead th:nth-child(2),
+.tally thead th:nth-child(3) {
+  text-align: right;
+  white-space: nowrap;
+  padding-left: 18px;
+}
+
+.tally .note {
+  color: var(--accent);
+  padding-left: 18px;
+}
+
+.tally tr.off .note,
+.tally tr.off td {
+  color: var(--warn-ink);
+  font-weight: bold;
+}
+
+.issues h4 {
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.issues ul {
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.issues li {
+  padding: 6px 10px;
+  background: var(--surface-raised);
+  border: 1px solid var(--rule-soft);
+  border-radius: 4px;
+}
+
+.issues .why {
+  display: block;
+  color: var(--ink-muted);
+}
+
+.next {
+  font-size: 13px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+
+/* ---- Clear deck ------------------------------------------------------------ */
+
+.btn.danger-quiet {
+  color: var(--danger-ink);
+}
+
+.btn.danger-quiet:hover {
+  color: #843534;
+  border-color: #d9a6a5;
+}
+
+.btn.danger {
+  color: #ffffff;
+  font-weight: bold;
+  background: var(--danger-ink);
+  border-color: #8f3735;
+}
+
+.btn.danger:hover {
+  background: #8f3735;
+  border-color: #7a2f2d;
+}
+
+.confirm {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+}
+
+.confirm-q {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--danger-ink);
+  margin-right: 2px;
+}
+
+.cleared-next {
+  font-weight: normal;
+  color: var(--ink);
+}
